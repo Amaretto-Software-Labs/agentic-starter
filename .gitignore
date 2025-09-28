@@ -1,0 +1,52 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment configs
+.env
+.env.*
+!.env.sample
+*.local
+
+# Logs & diagnostics
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+*.log
+
+# Node / Vite / Astro builds
+node_modules/
+.pnpm-store/
+build/
+dist/
+.astro/
+.vite/
+.storybook-out/
+
+# React tooling
+.next/
+.turbo/
+coverage/
+playwright-report/
+test-results/
+
+# .NET outputs
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.vs/
+TestResults/
+
+# IDE settings
+.vscode/
+.idea/
+*.swp
+
+# Miscellaneous
+*.tsbuildinfo
+*.tmp
+.sass-cache
