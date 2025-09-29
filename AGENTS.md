@@ -5,7 +5,8 @@
 - `backend/Identity.Api` - .NET 9 minimal API; feature folders live in `Features/<Domain>` with endpoints, handlers, validators, and EF mappings together.
 - `apps/web` - React 19 + Tailwind 4 SPA; primitives in `src/components`, feature logic in `src/features`, shared hooks in `src/lib`, tokens in `src/styles/tokens.css`.
 - `apps/marketing` - Astro marketing site plus FormFeeder snippets; Markdown in `src/content`, reusable forms in `src/components/forms`.
-- `packages/` hosts shared validation/telemetry/contracts; `docs/` stores integration runbooks that must change with configuration updates.
+- `packages/` hosts shared validation/telemetry/contracts; 
+- `docs/` contains subfolders for planning, specs, guides, sprints, audits, runbooks, and reference material (see `docs/README.md`).
 
 ## Build, Test, and Development Commands
 - Backend: `dotnet build backend/Identity.Api/Identity.Api.csproj`, `dotnet run --project backend/Identity.Api/Identity.Api.csproj`, `dotnet test backend/Identity.Api.Tests/Identity.Api.Tests.csproj` (adjust paths if the test project differs).
