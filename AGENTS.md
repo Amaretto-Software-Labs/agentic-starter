@@ -1,36 +1,38 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- `apps/api` – .NET 9 Minimal API with Identity.Base prewired; organise features in `src/Features/<Domain>` with endpoints, handlers, and EF maps together.
-- `apps/web` – React 19 + Tailwind 4 SPA; keep primitives in `src/components`, domain flows in `src/features`, shared hooks in `src/lib`.
-- `apps/marketing` – Astro marketing site; store content in `src/content`, serverless glue in `src/pages/api`, tokens in `src/styles`.
-- `packages/` – Shared validation, telemetry, contracts; consumed via workspace imports.
-- `docs/` – Up-to-date runbooks for identity, forms, email, and deployment.
+- `backend/Identity.Host` - Identity Base host wired for OpenID Connect, MFA, and external providers; keep composition in `Program.cs` and configuration under `appsettings.*`.
+- `backend/Identity.Api` - .NET 9 minimal API; feature folders live in `Features/<Domain>` with endpoints, handlers, validators, and EF mappings together.
+- `apps/web` - React 19 + Tailwind 4 SPA; primitives in `src/components`, feature logic in `src/features`, shared hooks in `src/lib`, tokens in `src/styles/tokens.css`.
+- `apps/marketing` - Astro marketing site plus FormFeeder snippets; Markdown in `src/content`, reusable forms in `src/components/forms`.
+- `packages/` hosts shared validation/telemetry/contracts; `docs/` stores integration runbooks that must change with configuration updates.
 
 ## Build, Test, and Development Commands
-- `dotnet build apps/api/src` then `dotnet run --project apps/api/src` to compile and start the Identity.Base-enabled API.
-- `dotnet test apps/api/tests` to run backend suites with MailJet/FormFeeder stubs.
-- `npm install` at root restores Node workspaces.
-- `npm run dev --workspace apps/web` for the React dev server; `npm run dev --workspace apps/marketing` for Astro preview.
-- `npm run lint --workspace apps/web` and `npm run test --workspace apps/web` to enforce ESLint + Vitest before commits.
+- Backend: `dotnet build backend/Identity.Api/Identity.Api.csproj`, `dotnet run --project backend/Identity.Api/Identity.Api.csproj`, `dotnet test backend/Identity.Api.Tests/Identity.Api.Tests.csproj` (adjust paths if the test project differs).
+- Identity Host: `dotnet build backend/Identity.Host/Identity.Host.csproj`, `dotnet run --project backend/Identity.Host/Identity.Host.csproj`.
+- Web: `npm install`, `npm run dev --workspace apps/web`, `npm run lint --workspace apps/web`, `npm run test --workspace apps/web`.
+- Marketing: `npm run dev --workspace apps/marketing` for preview; reuse Playwright smoke tests from `tests/web/e2e`.
 
 ## Coding Style & Naming Conventions
-- C#: 4-space indent, `PascalCase` types, `camelCase` locals, `Async` suffix for `Task` methods, DTOs named `<Feature>Request`/`<Feature>Response`.
-- TypeScript/React: 2-space indent, `PascalCase` components, `camelCase` utilities, `kebab-case` files; centralize Tailwind tokens in `src/styles/tokens.css`.
-- Astro: content collections, `kebab-case` routes, and colocated CSS modules per page.
+- C#: 4-space indent, `PascalCase` types, `camelCase` locals, `Async` suffix on `Task` members; DTOs as `<Feature>Request`/`<Feature>Response`.
+- TypeScript/React: 2-space indent, `PascalCase` components, `camelCase` hooks/utilities, `kebab-case` files; prefer functional components and TanStack Query.
+- Astro: content collections, `kebab-case` routes, colocated CSS modules.
 
 ## Testing Guidelines
-- API uses xUnit + FluentAssertions; mock MailJet and FormFeeder via DI-friendly interfaces in `apps/api/tests/Integrations`.
-- Web relies on Vitest for units and Playwright for E2E; place `*.spec.tsx` beside features and smoke flows under `tests/web/e2e`.
-- Marketing site runs `npm run astro check` plus Playwright smoke tests for lead funnels.
+- API: xUnit + FluentAssertions; mock external connectors in `backend/Identity.Api.Tests/Integrations` (or equivalent) and cover Identity.Base auth plus connector orchestration.
+- Web: Vitest for units and Playwright for journeys; keep specs beside features and end-to-end flows in `tests/web/e2e`.
+- Marketing: `npm run astro check` plus shared Playwright funnels; target >=80% coverage on auth, submission, and notification paths.
 
 ## Commit & Pull Request Guidelines
-- Follow Conventional Commits referencing roadmap IDs (`feat: add onboarding wizard`).
-- Keep commits scoped (API vs web vs marketing) and ship generated clients or migrations with their feature.
-- PRs require a summary, screenshots for UI/Astro updates, and test evidence (`dotnet test`, `npm run test`, Playwright artifacts`).
-- Ensure CI is green, refresh relevant docs (identity configs, FormFeeder schemas, MailJet templates), and resolve reviewer feedback before merge.
+- Adopt Conventional Commits tied to roadmap IDs; scope commits per surface (API, web, marketing) and ship migrations/generated clients with their feature.
+- PRs need a summary, screenshots for UI/Astro updates, test evidence (`dotnet test`, `npm run test`, Playwright artifacts), and doc/config updates. Merge only with green CI and resolved feedback.
+
+## Non-Negotiable Rules
+- **NEVER DELETE FILES YOU DID NOT CREATE OR MODIFY IN THIS SESSION.** If you find an unexpected file or change, stop and ask for guidance instead of removing it.
+- Favor minimal, well-scoped edits; leave unrelated files untouched.
+- Capture assumptions and uncertainties in your hand-off notes so follow-up work is easy.
 
 ## Integration Notes
-- Identity.Base settings live in `appsettings.Development.json.example` and `.env.sample`; keep tenant IDs, signing certs, and scopes aligned.
-- FormFeeder.io forms reside in `apps/marketing/forms`; register submission webhooks through `apps/api/src/Integrations/FormFeeder`.
-- MailJet templates are documented in `docs/mailjet/`; surface `MAILJET_API_KEY` and `MAILJET_SECRET` via deployment manifests and local `.env` files.
+- **Identity.Base**: Follow `docs/Identity_Base_Integration.md` for setup, expose tenant IDs, signing certs, and redirect URIs via `appsettings.Development.json.example`/`.env.sample`, and seed local accounts with the host command (`dotnet run --project backend/Identity.Host/Identity.Host.csproj -- setup`).
+- **FormFeeder**: Follow `docs/FormFeeder_Integration.md` for setup. Expose the active form IDs via env vars and keep domain allow-lists current so submissions avoid 401 errors.
+- **MailJet**: Surface `MAILJET_API_KEY`/`MAILJET_SECRET` in `.env` and manifests; log template IDs in `docs/mailjet/`. Attachments inherit FormFeeder limits.
