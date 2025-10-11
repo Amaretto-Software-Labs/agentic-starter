@@ -2,6 +2,8 @@
 This is a starter repo for applications that use a very oppiniated stack - React 19 + Tailwind 4 for frontend, .Net 9 for backend with minimal APIs, Postgres DB, FormFeeder to handle static forms, MailJet for emails, Identity.Base for identity and user management
 
 ## Project Structure & Module Organization
+- `apps/` is where the frontend applications live
+- `backend/` is where the backend .Net projects live
 - `docs/` contains subfolders for planning, specs, guides, sprints, audits, runbooks, and reference material (see `docs/README.md`).
 
 ## Non-Negotiable Rules

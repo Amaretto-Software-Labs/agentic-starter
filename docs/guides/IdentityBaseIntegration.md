@@ -10,7 +10,7 @@ Identity.Base delivers a complete OpenID Connect authority on top of ASP.NET Cor
    cd backend
    dotnet new web -n Identity.Host
    ```
-   Keep the solution file in the monorepo root and place .NET projects under `backend/`. Each .NET project lives in its own PascalCase folder (for example `backend/Identity.Host`, `backend/Api/Identity.Api`). React/Astro apps stay under `apps/`.
+   Keep the solution file in the monorepo root and place .NET projects under `backend/`. Each .NET project lives in its own PascalCase folder (for example `backend/Identity.Host`, `backend/<Project Name>.Api`). React/Astro apps stay under `apps/`.
 2. Install the core package:
    ```bash
    dotnet add backend/Identity.Host/Identity.Host.csproj package Identity.Base
@@ -90,7 +90,7 @@ Add or update `appsettings.Development.json` with the required sections:
           "scopes:profile",
           "scopes:email",
           "scopes:offline_access",
-          "scopes:identity.api"
+          "scopes:<Project Name>.Api"
         ],
         "Requirements": ["requirements:pkce"]
       }
@@ -114,7 +114,7 @@ dotnet run --project backend/Identity.Host/Identity.Host.csproj
 ```
 
 ## Step 3 - Connect Consumers
-- **API (`backend/Api/Identity.Api`)**: install `Identity.Base.AspNet` (`dotnet add backend/Api/Identity.Api/Identity.Api.csproj package Identity.Base.AspNet`), call `AddIdentityBaseAuthentication("https://localhost:5001")`, and require scopes (e.g. `identity.api`).
+- **API (`backend/<Project Name>.Api`)**: install `Identity.Base.AspNet` (`dotnet add backend/<Project Name>.Api/<Project Name>.Api.csproj package Identity.Base.AspNet`), call `AddIdentityBaseAuthentication("https://localhost:5001")`, and require scopes (e.g. `<Project Name>.Api`).
 - **React SPA**: configure PKCE client IDs, redirect URIs, and scopes to match the identity host. Use the discovery document (`/.well-known/openid-configuration`) for client libs.
 - **Astro marketing**: ensure the domain appears in both Identity.Base CORS and FormFeeder allow lists when embedding login forms.
 

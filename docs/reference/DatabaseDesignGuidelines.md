@@ -14,12 +14,12 @@
 ---
 
 ## 2. Tools & Workflow
-1. **Design:** capture ERD sketches (Mermaid/Draw.io) in `backend/Api/Identity.Api/Docs/Erd/` before implementing.
-2. **Model:** define EF Core entities and `DbContext` configuration in `backend/Api/Identity.Api/Data` (keep namespaces aligned with folder structure and use `IEntityTypeConfiguration` per aggregate).
-3. **Migration:** generate migrations via EF Core CLI (`dotnet ef migrations add <Name> -p backend/Api/Identity.Api/Identity.Api.csproj -s backend/Identity.Host/Identity.Host.csproj`). Store them in `backend/Api/Identity.Api/Migrations`.
+1. **Design:** capture ERD sketches (Mermaid/Draw.io) in `backend/<Project Name>.Api/Docs/Erd/` before implementing.
+2. **Model:** define EF Core entities and `DbContext` configuration in `backend/<Project Name>.Api/Data` (keep namespaces aligned with folder structure and use `IEntityTypeConfiguration` per aggregate).
+3. **Migration:** generate migrations via EF Core CLI (`dotnet ef migrations add <Name> -p backend/<Project Name>.Api/Identity.Api.csproj -s backend/<Project Name>.Host/Identity.Host.csproj`). Store them in `backend/<Project Name>.Api/Migrations`.
 4. **Review:** migrations must be human-reviewed; ensure column types, default values, constraints, and index names are intentional.
 5. **Apply:** the API automatically applies migrations on startup (`using var scope = app.Services.CreateScope(); scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.Migrate();`). CLI `dotnet ef database update` is reserved for local troubleshooting only.
-6. **Document:** update `backend/Api/Identity.Api/README.md` with migration name, purpose, and rollback steps.
+6. **Document:** update `backend/<Project Name>.Api/README.md` with migration name, purpose, and rollback steps.
 
 ---
 
